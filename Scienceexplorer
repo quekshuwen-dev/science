@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<title>🔬 Mia &amp; Mochi Science</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:#f0eeff;min-height:100vh}
+.app{max-width:700px;margin:0 auto;background:#fff;min-height:100vh}
+/* HEADER */
+.hdr{background:linear-gradient(135deg,#5B4FCF,#7B6FEF);padding:14px 16px;display:flex;align-items:center;gap:12px}
+.hdr-icon{width:46px;height:46px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.hdr h1{color:#fff;font-size:17px;font-weight:900;line-height:1.2}
+.hdr p{color:rgba(255,255,255,.75);font-size:11px;margin-top:2px;font-weight:600}
+/* TABS */
+.tabs{display:flex;background:#ede9ff;border-bottom:3px solid #c9c2f0;overflow-x:auto}
+.tb{flex-shrink:0;padding:10px 13px;font-size:12px;font-weight:900;border:none;background:transparent;cursor:pointer;color:#9087c9;border-bottom:3px solid transparent;white-space:nowrap;margin-bottom:-3px}
+.tb.on{color:#5B4FCF;border-bottom-color:#5B4FCF;background:#fff}
+.tc{display:none;padding:14px}.tc.on{display:block}
+/* LEVEL + TOPIC */
+.lbl{font-size:10px;font-weight:900;color:#9087c9;text-transform:uppercase;letter-spacing:1.5px;margin:12px 0 8px}
+.lbl:first-child{margin-top:0}
+.lvl-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.lvl-btn{padding:10px 22px;border-radius:30px;border:3px solid #d5ceff;background:#fff;font-size:16px;font-weight:900;color:#9087c9;cursor:pointer}
+.lvl-btn.on{background:#5B4FCF;border-color:#5B4FCF;color:#fff;box-shadow:0 4px 12px rgba(91,79,207,.3)}
+.topic-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:14px}
+.topic-card{border:3px solid #e8e4ff;border-radius:14px;padding:14px 10px;cursor:pointer;text-align:center;background:#fff}
+.topic-card.on{border-color:#5B4FCF;background:#ede9ff}
+.topic-card .t-em{font-size:36px;display:block;margin-bottom:6px}
+.topic-card .t-nm{font-size:12px;font-weight:900;color:#333;line-height:1.3}
+.go-btn{width:100%;padding:14px;border-radius:14px;border:none;background:#5B4FCF;color:#fff;font-size:17px;font-weight:900;cursor:pointer;box-shadow:0 4px 14px rgba(91,79,207,.35)}
+.go-btn:disabled{background:#ddd;color:#bbb;box-shadow:none}
+/* ── LESSON BLOCKS ── */
+.banner{border-radius:16px;padding:18px 16px;margin:14px 0 12px;text-align:center}
+.banner .b-em{font-size:46px;margin-bottom:7px;display:block}
+.banner .b-lbl{font-size:9px;font-weight:900;letter-spacing:2px;text-transform:uppercase;opacity:.72;margin-bottom:6px}
+.banner .b-txt{font-size:17px;font-weight:900;line-height:1.4}
+.bp{background:linear-gradient(135deg,#5B4FCF,#7B6FEF);color:#fff}
+.bg{background:linear-gradient(135deg,#0F8C63,#1DB983);color:#fff}
+.bo{background:linear-gradient(135deg,#CC7A00,#F09B20);color:#fff}
+.bb{background:linear-gradient(135deg,#1557A8,#2E7FD4);color:#fff}
+.stitle{font-size:12px;font-weight:900;color:#5B4FCF;margin:14px 0 8px;display:flex;align-items:center;gap:7px}
+.stitle::after{content:'';flex:1;height:3px;background:#e8e4ff;border-radius:3px}
+/* CARD GRID */
+.cg{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:11px}
+.cv{border-radius:13px;padding:13px 11px;text-align:center}
+.cv .e{font-size:33px;margin-bottom:6px;display:block}
+.cv .t{font-size:12px;font-weight:900;color:#fff;margin-bottom:3px;line-height:1.3}
+.cv .s{font-size:10px;font-weight:700;color:rgba(255,255,255,.88);line-height:1.5}
+.cp{background:#5B4FCF}.cg2{background:#0F8C63}.co{background:#D47800}.cb{background:#1F6DC5}
+.cr{background:#C0392B}.ct{background:#0E7566}.cpk{background:#B5366A}
+/* FLOW */
+.flow{background:#f4f1ff;border-radius:14px;padding:12px 10px;margin:9px 0 12px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;justify-content:center}
+.fb{text-align:center;background:#fff;border-radius:11px;padding:9px 8px;min-width:62px;max-width:82px;border:2.5px solid #d5ceff}
+.fb .fe{font-size:26px;margin-bottom:3px;display:block}
+.fb .fw{font-size:9px;font-weight:900;color:#5B4FCF;line-height:1.3}
+.fa{font-size:20px;color:#b3a8f0;font-weight:900;flex-shrink:0}
+.fp{border-color:#5B4FCF;background:#ede9ff}.fg{border-color:#0F8C63;background:#ddf5ec}
+.fo{border-color:#D47800;background:#fff3da}.fbb{border-color:#1F6DC5;background:#deeeff}
+.fr{border-color:#C0392B;background:#fce9e8}.ft{border-color:#0E7566;background:#d9f3f0}
+/* COMPARE */
+.cmp{display:flex;align-items:stretch;gap:9px;margin:9px 0 12px}
+.cs{flex:1;border-radius:13px;padding:13px 11px;text-align:center}
+.cs .ce{font-size:38px;margin-bottom:6px;display:block}
+.cs .ct2{font-size:12px;font-weight:900;margin-bottom:6px;line-height:1.3}
+.cs .cb2{font-size:11px;font-weight:700;line-height:1.65}
+.cL{background:#E1F5EE;border:3px solid #1D9E75}.cL .ct2{color:#0A5C41}.cL .cb2{color:#04342C}
+.cR{background:#FFF0DA;border:3px solid #D47800}.cR .ct2{color:#7A3F00}.cR .cb2{color:#5C2E00}
+.cvs{display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#b3a8f0;flex-shrink:0;width:22px}
+/* YES/NO */
+.yn{margin:7px 0 12px}
+.yr{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:11px;margin-bottom:5px}
+.ye{font-size:22px;flex-shrink:0;width:30px;text-align:center}
+.yn2{flex:1;font-size:12px;font-weight:900;color:#333}
+.yb{padding:4px 12px;border-radius:18px;font-size:11px;font-weight:900;flex-shrink:0}
+.yy{background:#E1F5EE}.yy .yb{background:#0F8C63;color:#fff}
+.yn3{background:#FCEBEB}.yn3 .yb{background:#C0392B;color:#fff}
+/* TABLE */
+.vt{width:100%;border-collapse:collapse;margin:7px 0 12px;font-size:11px}
+.vt th{background:#5B4FCF;color:#fff;padding:8px 9px;font-size:10px;font-weight:900;text-align:left}
+.vt td{padding:8px 9px;border-bottom:2px solid #f0eeff;vertical-align:middle;line-height:1.5;font-weight:700;color:#333}
+.vt tr:nth-child(even) td{background:#f8f6ff}
+.vt td:first-child{font-weight:900;color:#5B4FCF}
+/* MEMORY */
+.mem{display:flex;gap:11px;align-items:flex-start;background:#FFF0DA;border-radius:13px;padding:13px 15px;margin:9px 0 12px;border-left:5px solid #D47800}
+.me{font-size:28px;flex-shrink:0}
+.mt{font-size:12px;font-weight:900;color:#5C2E00;line-height:1.6;font-style:italic}
+/* SCENE */
+.scene{background:#deeeff;border-radius:13px;padding:13px 15px;margin:9px 0 12px;border-left:5px solid #1F6DC5}
+.sl{font-size:9px;font-weight:900;color:#1557A8;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px}
+.st2{font-size:12px;font-weight:800;color:#0A2D5C;line-height:1.75}
+/* STEPS */
+.steps{margin:7px 0 12px}
+.sr{display:flex;gap:11px;align-items:flex-start;margin-bottom:10px}
+.sn{width:30px;height:30px;border-radius:50%;background:#5B4FCF;color:#fff;font-size:13px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.si{font-size:22px;display:block;margin-bottom:1px}
+.st3{font-size:12px;font-weight:800;color:#333;line-height:1.55}
+/* KEYWORDS + QUIZ */
+.kwr{display:flex;gap:5px;flex-wrap:wrap;margin:5px 0 14px}
+.kw{padding:4px 11px;border-radius:18px;background:#ede9ff;color:#5B4FCF;font-size:10px;font-weight:900;border:2px solid #c9c2f0}
+.qq{background:#f8f6ff;border-radius:12px;padding:13px;margin-bottom:10px;border:2px solid #e8e4ff}
+.qqt{font-size:12px;font-weight:900;color:#333;margin-bottom:9px;line-height:1.4}
+.qo{padding:10px 13px;border-radius:9px;margin-bottom:5px;border:2.5px solid #d5ceff;font-size:11px;font-weight:800;cursor:pointer;background:#fff;color:#555;text-align:left;width:100%;line-height:1.4}
+.qo.ok{background:#0F8C63;border-color:#0F8C63;color:#fff}
+.qo.no{background:#C0392B;border-color:#C0392B;color:#fff}
+/* ANIMAL GRID */
+.ag{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin:9px 0 12px}
+.ac{border-radius:13px;padding:12px 11px;border:3px solid}
+.ac .ae{font-size:32px;margin-bottom:5px;display:block}
+.ac .an{font-size:12px;font-weight:900;margin-bottom:6px}
+.ac .at{display:inline-block;background:rgba(0,0,0,.07);border-radius:5px;padding:2px 6px;margin:2px 2px 2px 0;font-size:9px;font-weight:900;color:#333}
+.ac .aex{font-size:10px;font-weight:800;color:#555;margin-top:5px;line-height:1.5}
+/* MAGNET CARDS */
+.mg{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin:9px 0 12px}
+.mc{border-radius:13px;padding:13px 11px;text-align:center;border:3px solid #d5ceff;background:#f8f6ff}
+.mc .mce{font-size:40px;margin-bottom:5px;display:block}
+.mc .mcn{font-size:12px;font-weight:900;color:#5B4FCF;margin-bottom:5px}
+.mc .mcd{font-size:10px;font-weight:700;color:#555;line-height:1.5}
+.mc .mcu{display:inline-block;margin-top:7px;padding:3px 9px;border-radius:9px;background:#5B4FCF;color:#fff;font-size:9px;font-weight:900}
+/* EXPORT + NOTES */
+.el{display:flex;flex-direction:column;gap:9px}
+.eb{display:flex;align-items:center;gap:12px;padding:14px;border-radius:13px;border:3px solid #e8e4ff;background:#f8f6ff;cursor:pointer;text-align:left;width:100%}
+.eb:active{background:#ede9ff;border-color:#5B4FCF}
+.ebi{font-size:28px;flex-shrink:0}
+.ebt{font-size:13px;font-weight:900;color:#333}
+.ebs{font-size:10px;font-weight:700;color:#aaa;margin-top:1px}
+.uz{border:3px dashed #c9c2f0;border-radius:14px;padding:24px;text-align:center;cursor:pointer;background:#f8f6ff;margin-bottom:11px}
+.uze{font-size:40px;margin-bottom:7px;display:block}
+.uzh{font-size:14px;font-weight:900;color:#333;margin-bottom:2px}
+.uzs{font-size:11px;font-weight:700;color:#aaa}
+.nta{width:100%;min-height:75px;padding:11px 13px;border-radius:12px;border:2.5px solid #d5ceff;font-size:12px;font-weight:700;color:#333;resize:vertical;line-height:1.6;font-family:inherit}
+.nta:focus{outline:none;border-color:#5B4FCF}
+.ri{display:flex;gap:7px;margin:8px 0 12px;flex-wrap:wrap;align-items:center}
+.ri input{padding:9px 12px;border-radius:10px;border:2.5px solid #d5ceff;font-size:11px;font-weight:800;color:#333;background:#fff}
+.ri input:focus{outline:none;border-color:#5B4FCF}
+.sv{padding:9px 18px;border-radius:10px;border:none;background:#5B4FCF;color:#fff;font-size:12px;font-weight:900;cursor:pointer}
+.nc{background:#f8f6ff;border-radius:12px;padding:12px;margin-bottom:7px;border:2.5px solid #e8e4ff}
+.nt{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px}
+.ntl{font-size:11px;font-weight:900;color:#5B4FCF}
+.nd{padding:3px 9px;border-radius:7px;border:2px solid #d5ceff;background:#fff;cursor:pointer;font-size:10px;font-weight:900;color:#aaa}
+.nb{font-size:11px;font-weight:700;color:#666;line-height:1.55}
+/* PROGRESS */
+.pr{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.pl{font-size:14px;font-weight:900;color:#5B4FCF;width:36px}
+.pb{flex:1;height:13px;background:#e8e4ff;border-radius:6px;overflow:hidden}
+.pf{height:100%;background:linear-gradient(90deg,#5B4FCF,#7B6FEF);border-radius:6px}
+.pn{font-size:11px;font-weight:900;color:#9087c9;width:42px;text-align:right}
+.dp{display:inline-block;padding:4px 10px;border-radius:18px;font-size:10px;background:#E1F5EE;color:#0A5C41;margin:3px;font-weight:900;border:2px solid #8FD9BC}
+/* ASK */
+.ar{display:flex;gap:8px;margin-bottom:10px}
+.ar input{flex:1;padding:11px 14px;border-radius:12px;border:2.5px solid #d5ceff;font-size:12px;font-weight:800;color:#333}
+.ar input:focus{outline:none;border-color:#5B4FCF}
+.ar button{padding:11px 18px;border-radius:12px;border:none;background:#0F8C63;color:#fff;font-size:13px;font-weight:900;cursor:pointer;flex-shrink:0}
+.chip{padding:6px 12px;border-radius:18px;border:2.5px solid #d5ceff;font-size:10px;font-weight:900;cursor:pointer;background:#f8f6ff;color:#5B4FCF;margin-bottom:5px;display:inline-block}
+.chiprow{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+/* EMPTY */
+.emp{text-align:center;padding:36px 16px;color:#ccc}
+.emp .ee{font-size:46px;margin-bottom:9px}
+.emp .et{font-size:14px;font-weight:900}
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:11px 22px;border-radius:24px;font-size:12px;font-weight:900;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="hdr">
+  <div class="hdr-icon">🔬</div>
+  <div>
+    <h1>Mia &amp; Mochi Science! 🌟</h1>
+    <p>Singapore MOE · P3 to P6 · Learn with pictures</p>
+  </div>
+</div>
+<div class="tabs">
+  <button class="tb on" onclick="sw('learn')">🎨 Learn</button>
+  <button class="tb" onclick="sw('ask')">💬 Ask</button>
+  <button class="tb" onclick="sw('notes')">📂 Notes</button>
+  <button class="tb" onclick="sw('export')">📤 Export</button>
+  <button class="tb" onclick="sw('stars')">⭐ Stars</button>
+</div>
+
+<div id="tlearn" class="tc on">
+  <div class="lbl">Pick your level 👇</div>
+  <div class="lvl-row" id="lvlRow"></div>
+  <div id="topSec" style="display:none">
+    <div class="lbl">Pick a topic 👇</div>
+    <div class="topic-grid" id="topGrid"></div>
+  </div>
+  <button class="go-btn" id="goBtn" disabled onclick="showLesson()">✨ Show me!</button>
+  <div id="lessonOut" style="margin-top:14px"></div>
+</div>
+
+<div id="task" class="tc">
+  <div class="lbl">What do you want to know? 🤔</div>
+  <div class="ar"><input id="qin" type="text" placeholder="Type your question..." onkeydown="if(event.key==='Enter')doAsk()"/><button onclick="doAsk()">Ask! ✨</button></div>
+  <div class="lbl">Try these 👇</div>
+  <div class="chiprow" id="chips"></div>
+  <div id="qaOut"><div class="emp"><div class="ee">🌟</div><div class="et">Ask me anything!</div></div></div>
+</div>
+
+<div id="tnotes" class="tc">
+  <div class="lbl">Upload a photo 📸</div>
+  <div class="uz" onclick="document.getElementById('fIn').click()"><span class="uze">📄</span><div class="uzh">Tap to upload!</div><div class="uzs">Photo or text file · Max 5MB</div></div>
+  <input type="file" id="fIn" style="display:none" accept=".txt,.png,.jpg,.jpeg" onchange="onFile(event)"/>
+  <div id="fList"></div>
+  <div id="fPreview" style="display:none"><div class="lbl">Uploaded 👆</div><div id="fContent"></div></div>
+  <div class="lbl" style="margin-top:12px">Write notes ✏️</div>
+  <textarea class="nta" id="nta" placeholder="Write notes here..."></textarea>
+  <div class="ri">
+    <input id="nLvl" placeholder="Level e.g. P4" style="width:90px"/>
+    <input id="nTopic" placeholder="Topic e.g. Light" style="flex:1;min-width:100px"/>
+    <button class="sv" onclick="saveNote()">💾 Save</button>
+  </div>
+  <div class="lbl">Saved notes 📝</div>
+  <div id="nList"><div class="emp" style="padding:14px 0"><div class="ee" style="font-size:36px">📝</div><div class="et" style="font-size:12px">No notes yet!</div></div></div>
+</div>
+
+<div id="texport" class="tc">
+  <div class="lbl">Save &amp; Share 📤</div>
+  <div class="el">
+    <button class="eb" onclick="copyLesson()"><span class="ebi">📋</span><div><div class="ebt">Copy lesson</div><div class="ebs">Paste into WhatsApp or Notes</div></div></button>
+    <button class="eb" onclick="exportNotes()"><span class="ebi">📝</span><div><div class="ebt">Save my notes</div><div class="ebs">Download as a file</div></div></button>
+    <button class="eb" onclick="exportStars()"><span class="ebi">⭐</span><div><div class="ebt">Save my stars</div><div class="ebs">Download progress report</div></div></button>
+    <button class="eb" onclick="window.print()"><span class="ebi">🖨️</span><div><div class="ebt">Print or save PDF</div><div class="ebs">Opens print menu</div></div></button>
+  </div>
+  <div class="lbl" style="margin-top:18px">Add to home screen 📱</div>
+  <div style="background:#f8f6ff;border-radius:14px;padding:16px;border:3px solid #e8e4ff">
+    <div style="font-size:14px;font-weight:900;color:#5B4FCF;margin-bottom:5px">📱 iPhone</div>
+    <div style="font-size:12px;font-weight:700;color:#555;line-height:1.7;margin-bottom:12px">Safari → Share → <strong>Add to Home Screen</strong></div>
+    <div style="font-size:14px;font-weight:900;color:#5B4FCF;margin-bottom:5px">🤖 Android</div>
+    <div style="font-size:12px;font-weight:700;color:#555;line-height:1.7">Chrome → ⋮ → <strong>Add to Home Screen</strong></div>
+  </div>
+</div>
+
+<div id="tstars" class="tc">
+  <div class="lbl">My stars ⭐</div>
+  <div id="starsOut"><div class="emp"><div class="ee">🌱</div><div class="et">Learn a topic to earn stars!</div></div></div>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── TINY HELPERS ── */
+function B(em,txt,cl){return'<div class="banner '+(cl||'bp')+'"><span class="b-em">'+em+'</span><div class="b-lbl">Big idea ⭐</div><div class="b-txt">'+txt+'</div></div>';}
+function ST(t){return'<div class="stitle">'+t+'</div>';}
+function CG(arr){return'<div class="cg">'+arr.join('')+'</div>';}
+function CV(em,t,s,cl){return'<div class="cv '+(cl||'cp')+'"><span class="e">'+em+'</span><div class="t">'+t+'</div><div class="s">'+s+'</div></div>';}
+function FL(boxes){return'<div class="flow">'+boxes.map(function(b,i){return'<div class="fb '+(b.c||'')+'"><span class="fe">'+b.em+'</span><div class="fw">'+b.w+'</div></div>'+(i<boxes.length-1?'<span class="fa">→</span>':'');}).join('')+'</div>';}
+function CMP(L,R){return'<div class="cmp"><div class="cs cL"><span class="ce">'+L.em+'</span><div class="ct2">'+L.t+'</div><div class="cb2">'+L.b+'</div></div><div class="cvs">VS</div><div class="cs cR"><span class="ce">'+R.em+'</span><div class="ct2">'+R.t+'</div><div class="cb2">'+R.b+'</div></div></div>';}
+function YN(rows){return'<div class="yn">'+rows.map(function(r){return'<div class="yr '+(r.y?'yy':'yn3')+'"><span class="ye">'+r.em+'</span><span class="yn2">'+r.n+'</span><span class="yb">'+(r.y?'✅ YES':'❌ NO')+'</span></div>';}).join('')+'</div>';}
+function TBL(hds,rows){return'<table class="vt"><tr>'+hds.map(function(h){return'<th>'+h+'</th>';}).join('')+'</tr>'+rows.map(function(r){return'<tr>'+r.map(function(c){return'<td>'+c+'</td>';}).join('')+'</tr>';}).join('')+'</table>';}
+function MEM(em,t,bg,bc,tc){return'<div class="mem" style="background:'+(bg||'#FFF0DA')+';border-left-color:'+(bc||'#D47800')+'"><div class="me">'+em+'</div><div class="mt" style="color:'+(tc||'#5C2E00')+'">'+t+'</div></div>';}
+function SC(txt,lbl){return'<div class="scene"><div class="sl">'+(lbl||'🎨 Picture this!')+'</div><div class="st2">'+txt+'</div></div>';}
+function STP(arr){return'<div class="steps">'+arr.map(function(s,i){return'<div class="sr"><div class="sn">'+(i+1)+'</div><div><span class="si">'+s.em+'</span><div class="st3">'+s.t+'</div></div></div>';}).join('')+'</div>';}
+function KW(arr){return'<div class="kwr">'+arr.map(function(k){return'<span class="kw">'+k+'</span>';}).join('')+'</div>';}
+function QZ(qs){return qs.map(function(q,qi){return'<div class="qq"><div class="qqt">'+(qi+1)+'. '+q.q+'</div>'+q.opts.map(function(o,oi){var l=['A','B','C'][oi],ok=q.ans===l;return'<button class="qo" data-ok="'+ok+'" onclick="revQ(this,'+ok+')">'+o+'</button>';}).join('')+'</div>';}).join('');}
+function WL(c,kws,qs){return c+ST('📖 Key words')+KW(kws)+ST('✏️ Quick quiz!')+QZ(qs)+'<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button onclick="copyLesson()" style="padding:10px 18px;border-radius:11px;border:none;background:#5B4FCF;color:#fff;font-size:12px;font-weight:900;cursor:pointer">📋 Copy</button><button onclick="window.print()" style="padding:10px 18px;border-radius:11px;border:3px solid #d5ceff;background:#fff;font-size:12px;font-weight:900;cursor:pointer;color:#5B4FCF">🖨️ Print</button></div>';}
+function revQ(el,ok){el.parentElement.querySelectorAll('.qo').forEach(function(s){s.onclick=null;if(s.dataset.ok==='true')s.classList.add('ok');});if(!ok)el.classList.add('no');}
+
+/* ══════════════════════════════════════════════
+   ALL LESSONS — P3 to P6
+   Rule: emoji first · max 5 words per idea
+   No text paragraphs — only cards/flows/tables
+══════════════════════════════════════════════ */
+var L={
+
+/* ─────────── P3: LIVING THINGS ─────────── */
+'div-living':function(){var c=
+B('🌿','Does it breathe? Does it grow? = LIVING!','bg')+
+ST('🌿 Living vs Non-Living')+
+CG([CV('🐕','Living','Grows · Breathes · Eats · Moves · Makes babies','cg2'),CV('🪨','Non-Living','Does NOT grow · NOT breathe · Made or found · Rock · Chair','cp'),CV('🌳','Plant = Living!','Grows toward light · Makes own food · Makes seeds','cg2'),CV('🪑','Chair = Non-Living!','Made by humans · Cannot grow or reproduce · No life!','cp')])+
+SC('Look at a dog 🐕 — it eats, breathes, grows and has puppies. Now look at a bench 🪑 — it just sits there. It NEVER grows or breathes. Dog = LIVING ✅  Bench = NON-LIVING ❌')+
+ST('🔬 MRS NERG — 7 things ALL living things do!')+
+FL([{em:'🏃',w:'M Movement',c:'fp'},{em:'😮‍💨',w:'R Respiration',c:'fg'},{em:'👂',w:'S Sensitivity',c:'fbb'},{em:'🍎',w:'N Nutrition',c:'fo'},{em:'💦',w:'E Excretion',c:'ft'},{em:'👶',w:'R Reproduction',c:'fp'},{em:'📈',w:'G Growth',c:'fg'}])+
+MEM('🧠','MRS NERG! All 7 = living thing! Movement · Respiration · Sensitivity · Nutrition · Excretion · Reproduction · Growth')+
+ST('🦴 Backbone or not?')+
+CMP({em:'🦴',t:'Vertebrate — HAS backbone',b:'Fish · Frog · Lizard · Bird · Dog · Human'},{em:'🐛',t:'Invertebrate — NO backbone',b:'Insect · Spider · Worm · Jellyfish · Snail'});
+return WL(c,['living','non-living','MRS NERG','life processes','vertebrate','invertebrate','organism','classify','characteristic'],[
+{q:'Which is a living thing?',opts:['A. 🪑 Chair','B. 🦋 Butterfly','C. 🪟 Window'],ans:'B'},
+{q:'Which is NOT in MRS NERG?',opts:['A. Growth','B. Reproduction','C. Digestion'],ans:'C'},
+{q:'Which animal has a backbone?',opts:['A. 🐛 Caterpillar','B. 🕷️ Spider','C. 🐟 Fish'],ans:'C'}]);},
+
+/* ─────────── P3: MATERIALS ─────────── */
+'div-mat':function(){var c=
+B('🧱','Right material = right job!','bp')+
+ST('🌿 Natural materials — from nature')+
+TBL(['Material','From','Properties','Used for'],[
+['🪵 Wood','🌳 Trees','Hard · Strong','Furniture · Pencils'],
+['🧶 Cotton','🌸 Plant','Soft · Absorbent','Clothes · Towels'],
+['🐑 Wool','🐑 Sheep','Soft · Warm','Jumpers · Blankets'],
+['🐛 Silk','🐛 Silkworm','Smooth · Shiny','Clothes · Ties'],
+['🌴 Rubber','🌴 Tree','Flexible · Waterproof','Boots · Tyres'],
+['🪨 Stone','⛏️ Earth','Hard · Heavy','Buildings · Roads'],
+['🏖️ Sand','🏖️ Beach','Grainy · Rough','Glass · Sandpaper'],
+['🌍 Clay','🌍 Earth','Soft wet · Hard fired','Pots · Bricks']])+
+ST('🏭 Man-made materials — from factories')+
+TBL(['Material','From','Properties','Used for'],[
+['🧴 Plastic','Oil','Light · Waterproof','Bottles · Bags'],
+['🪟 Glass','Sand+heat','Transparent · Hard','Windows · Lenses'],
+['⚙️ Steel','Iron+carbon','Very strong · Magnetic','Bridges · Buildings'],
+['🥤 Aluminium','Ore','Light · NOT magnetic','Cans · Aircraft'],
+['🧵 Nylon','Oil','Strong · Smooth','Ropes · Bags'],
+['🔌 Copper','Ore','Best conductor','Wires · Pots']])+
+ST('🔍 What each property LOOKS like')+
+CG([CV('🪟','Transparent','See through CLEARLY · Glass · Cling wrap','cb'),CV('🌫️','Translucent','Blurry light · Frosted glass','ct'),CV('🧱','Opaque','NO light · Shadow! · Wood · Metal','cp'),CV('💧','Waterproof','Water cannot pass · Rubber · Plastic','cg2'),CV('🧽','Absorbent','Soaks water · Cotton · Sponge','co'),CV('🌀','Flexible','Bends! · Rubber · Cloth','ct'),CV('🔩','Rigid / Hard','Cannot bend · Metal · Stone','cr'),CV('🧲','Magnetic','Pulled by magnet · Iron · Steel · Nickel','cpk')])+
+MEM('⚠️','NOT all metals are magnetic! Aluminium, copper, gold = metals but NOT magnetic!');
+return WL(c,['natural','man-made','transparent','translucent','opaque','waterproof','absorbent','flexible','rigid','magnetic','conductor'],[
+{q:'Why is glass used for windows?',opts:['A. 💧 Waterproof','B. 🪟 Transparent','C. 🧲 Magnetic'],ans:'B'},
+{q:'Which is a NATURAL material?',opts:['A. 🧴 Plastic','B. 🧵 Nylon','C. 🧶 Cotton'],ans:'C'},
+{q:'Which material is NOT magnetic?',opts:['A. ⚙️ Steel','B. 🔩 Iron','C. 🥤 Aluminium'],ans:'C'}]);},
+
+/* ─────────── P3: LIFE CYCLES ─────────── */
+'lifecycles':function(){var c=
+B('🌱','Born → Grow → Reproduce → Die — every living thing!','bg')+
+ST('4️⃣ COMPLETE metamorphosis — 4 stages — animal looks TOTALLY different!')+
+SC('A caterpillar 🐛 looks NOTHING like a butterfly 🦋 — but it becomes one! Complete = 4 stages. Looks completely different at each stage.')+
+FL([{em:'🥚',w:'Stage 1 EGG',c:'fg'},{em:'🐛',w:'Stage 2 LARVA caterpillar',c:'fo'},{em:'🫘',w:'Stage 3 PUPA cocoon',c:'fp'},{em:'🦋',w:'Stage 4 ADULT',c:'fbb'}])+
+TBL(['Animal','Larva looks like','Pupa','Adult'],[
+['🦋 Butterfly','🐛 Caterpillar','🫘 Chrysalis on leaf','🦋 Wings!'],
+['🐝 Bee','🪱 Tiny white grub','🫘 In honeycomb','🐝 Flies + stings!'],
+['🪲 Beetle','🪱 Creamy grub in soil','🫘 In soil','🪲 Hard wing case'],
+['🦟 Mosquito','🐟 Wriggler in water','🌀 Tumbler in water','🦟 Flies + bites!'],
+['🐸 Frog*','🐟 Tadpole with tail','🐸 Froglet','🐸 Land + water']])+
+'<p style="font-size:10px;font-weight:800;color:#999;margin:-7px 0 11px">*Frog = 4 stages but is AMPHIBIAN — not an insect!</p>'+
+ST('3️⃣ INCOMPLETE metamorphosis — 3 stages — nymph looks SIMILAR to adult!')+
+SC('Baby grasshopper 🦗 already looks like a tiny adult! Just no wings yet. NO pupa stage at all. 3 stages only.')+
+FL([{em:'🥚',w:'Stage 1 EGG',c:'fg'},{em:'🦗',w:'Stage 2 NYMPH mini adult no wings',c:'fo'},{em:'🦗',w:'Stage 3 ADULT with wings',c:'fbb'}])+
+TBL(['Animal','Nymph looks like','Adult'],[
+['🦗 Grasshopper','🦗 Tiny — no wings','🦗 Flies + jumps!'],
+['🪳 Cockroach','🪳 Small — no wings','🪳 Scuttles fast!'],
+['🦟 Dragonfly','Underwater nymph','🦟 Beautiful flyer!']])+
+ST('🆚 4 stages vs 3 stages')+
+CMP({em:'🦋',t:'4 Stages — COMPLETE',b:'Has PUPA stage ✅<br/>Larva looks TOTALLY different<br/>Butterfly · Bee · Beetle · Frog'},{em:'🦗',t:'3 Stages — INCOMPLETE',b:'NO pupa stage ❌<br/>Nymph looks SIMILAR to adult<br/>Grasshopper · Cockroach · Dragonfly'})+
+ST('🐾 The 7 animal groups')+
+(function(){var g=[{em:'🐟',n:'1. Fish',col:'#1F6DC5',bg:'#deeeff',tags:['Scales','Gills','Eggs in water','Cold-blooded'],ex:'Salmon · Shark · Goldfish'},{em:'🐸',n:'2. Amphibians',col:'#0E7566',bg:'#d9f3f0',tags:['Moist skin','Gills → Lungs','Eggs in water','Cold-blooded'],ex:'Frog · Toad · Salamander'},{em:'🦎',n:'3. Reptiles',col:'#D47800',bg:'#fff3da',tags:['Dry scales','Lungs','Eggs on land','Cold-blooded'],ex:'Lizard · Snake · Crocodile'},{em:'🐦',n:'4. Birds',col:'#5B4FCF',bg:'#ede9ff',tags:['Feathers','Lungs','Hard-shell eggs','Warm ♨️'],ex:'Eagle · Penguin · Parrot'},{em:'🐘',n:'5. Mammals',col:'#B5366A',bg:'#fce4ef',tags:['Hair/Fur','Lungs','Live birth · Milk 🍼','Warm ♨️'],ex:'Dog · Whale · Human'},{em:'🦋',n:'6. Insects',col:'#C0392B',bg:'#fce9e8',tags:['6 legs','3 body parts','Exoskeleton','Cold-blooded'],ex:'Bee · Ant · Beetle · Mosquito'},{em:'🕷️',n:'7. Arachnids',col:'#4a3fb0',bg:'#eeeaff',tags:['8 legs','2 body parts','No wings!','Cold-blooded'],ex:'Spider · Scorpion · Tick'}];var h='<div class="ag">';g.forEach(function(x){h+='<div class="ac" style="border-color:'+x.col+';background:'+x.bg+'"><span class="ae">'+x.em+'</span><div class="an" style="color:'+x.col+'">'+x.n+'</div>'+x.tags.map(function(t){return'<span class="at">'+t+'</span>';}).join('')+'<div class="aex">'+x.ex+'</div></div>';});return h+'</div>';})();
+return WL(c,['life cycle','metamorphosis','complete','incomplete','larva','pupa','nymph','egg','adult','vertebrate','invertebrate','mammal','bird','reptile','amphibian','fish','insect','arachnid'],[
+{q:'Which has 4 stages?',opts:['A. 🦗 Grasshopper','B. 🦋 Butterfly','C. 🪳 Cockroach'],ans:'B'},
+{q:'Stage 2 of butterfly is called...',opts:['A. Nymph','B. Pupa','C. Larva (caterpillar)'],ans:'C'},
+{q:'Which group feeds babies with MILK?',opts:['A. 🐸 Amphibians','B. 🐘 Mammals','C. 🐦 Birds'],ans:'B'}]);},
+
+/* ─────────── P3: MAGNETS ─────────── */
+'magnets':function(){var c=
+B('🧲','Magnets pull iron and steel — and we can MAKE them!','bp')+
+ST('🔧 5 types of magnets')+
+(function(){var mg=[{em:'📊',n:'Bar Magnet',d:'Rectangle. N pole one end, S pole other. Strongest at both ends!',u:'Experiments · Compasses'},{em:'🧲',n:'Horseshoe Magnet',d:'U shape. Both poles face SAME way. Stronger than bar!',u:'Lifting heavy metal'},{em:'💿',n:'Ring / Disc',d:'Round. North on one flat face, South on other face.',u:'Speakers · Fridge magnets'},{em:'⚡',n:'Electromagnet',d:'Wire + iron + battery. ON = magnetic. OFF = not magnetic!',u:'Cranes · MRI · Doorbells'},{em:'💎',n:'Neodymium',d:'TINY but SUPER STRONG. Strongest permanent magnet!',u:'Hard drives · Headphones'}];var h='<div class="mg">';mg.forEach(function(m){h+='<div class="mc"><span class="mce">'+m.em+'</span><div class="mcn">'+m.n+'</div><div class="mcd">'+m.d+'</div><div class="mcu">'+m.u+'</div></div>';});return h+'</div>';})();
+c+=ST('⚡ How electromagnet works')+
+SC('Wrap copper wire around an iron nail many times. Connect both ends to a battery. Electricity flows → nail becomes a MAGNET! Turn battery off → electricity stops → NOT magnetic anymore! 🔋')+
+FL([{em:'🔩',w:'Iron nail',c:'fo'},{em:'+',w:''},{em:'🌀',w:'Wire coil',c:'fbb'},{em:'+',w:''},{em:'🔋',w:'Battery ON',c:'fg'},{em:'=',w:''},{em:'🧲',w:'MAGNET!',c:'fp'}])+
+ST('💪 Make electromagnet STRONGER')+
+CG([CV('🌀🌀🌀','More coils!','More wire loops = stronger','cp'),CV('🔋🔋','Bigger battery!','More power = stronger','cg2'),CV('🔩','Iron core!','Must be iron — not plastic!','co'),CV('📏','Thicker core!','Fatter nail = stronger','cb')])+
+ST('🛠️ Stroking method — make a permanent magnet')+
+STP([{em:'🔩',t:'Take a steel nail or needle'},{em:'🧲',t:'Place NORTH POLE of bar magnet at one end'},{em:'➡️',t:'Stroke ONE direction only — start to end — do NOT go back!'},{em:'🔁',t:'Repeat many times — always same direction!'},{em:'📎',t:'Test with paper clips — it should attract them now!'}])+
+ST('🔩 Which materials are magnetic?')+
+YN([{em:'🔩',n:'Iron',y:true},{em:'⚙️',n:'Steel (iron+carbon)',y:true},{em:'🪙',n:'Nickel',y:true},{em:'🔮',n:'Cobalt',y:true},{em:'🥄',n:'Copper',y:false},{em:'🥤',n:'Aluminium',y:false},{em:'💛',n:'Gold / Silver',y:false},{em:'🧴',n:'Plastic',y:false},{em:'🪵',n:'Wood',y:false},{em:'🍶',n:'Glass',y:false}])+
+MEM('⚠️','NOT all metals are magnetic! Aluminium, copper, gold are metals — but NOT magnetic!')+
+CG([CV('🧲🧲','N meets S = ATTRACT!','Opposite poles pull together → SNAP! 💥','cg2'),CV('🔄','N meets N = REPEL!','Same poles push AWAY 😤','cr')])+
+CMP({em:'🧲',t:'Permanent Magnet',b:'Always ON ✅<br/>Cannot switch off ❌<br/>Fixed strength ❌<br/>Compass · Fridge magnet'},{em:'⚡',t:'Electromagnet',b:'Only ON with electricity ⚡<br/>Can switch OFF ✅<br/>Adjustable strength ✅<br/>Crane · MRI · Doorbell'});
+return WL(c,['magnet','permanent','electromagnet','north pole','south pole','attract','repel','magnetic','non-magnetic','iron','steel','nickel','cobalt','coil','current'],[
+{q:'What makes an electromagnet special?',opts:['A. Uses nickel only','B. ⚡ Can switch on and off','C. Only has one pole'],ans:'B'},
+{q:'Which IS attracted to a magnet?',opts:['A. 🥤 Aluminium','B. 🥄 Copper','C. ⚙️ Steel'],ans:'C'},
+{q:'Same poles facing = ?',opts:['A. ✅ Attract','B. ❌ Repel (push away)','C. Nothing'],ans:'B'}]);},
+
+/* ─────────── P4: PLANT SYSTEM ─────────── */
+'plant-sys':function(){var c=
+B('🌿','Every plant part has ONE job!','bg')+
+CG([CV('🌱','Roots','Absorb water + minerals · Anchor plant · Invisible underground','cg2'),CV('🌿','Stem','Carries water UP · Supports plant · Like a lift!','ct'),CV('🍃','Leaves','Make food! Sunlight + water + CO₂ = food + O₂','cb'),CV('🌸','Flower','Reproduction · Attracts pollinators · Has pollen + eggs','cpk'),CV('🍎','Fruit','Holds seeds · Helps seeds spread · Forms after pollination','co'),CV('🌰','Seed','Grows into new plant · Inside fruit','cp')])+
+SC('Imagine a restaurant 🍽️! Roots = delivery truck (bring water). Stem = lift going UP. Leaf = kitchen making food with sunlight. Flower = finished dish attracting bees!')+
+FL([{em:'💧',w:'Soil water',c:'fbb'},{em:'🌱',w:'Roots absorb',c:'fg'},{em:'⬆️',w:'Stem carries UP',c:'ft'},{em:'🍃',w:'Leaves use water',c:'fbb'},{em:'☀️',w:'Make food!',c:'fo'}])+
+TBL(['Part','Job','Without it...'],[
+['🌱 Roots','Absorb water + minerals · Anchor','No water · Plant falls over!'],
+['🌿 Stem','Transport water up · Support','Water cannot reach leaves!'],
+['🍃 Leaves','Photosynthesis — make food','No food → plant dies!'],
+['🌸 Flower','Attract pollinators · Reproduce','No seeds → no new plants!'],
+['🍎 Fruit','Protect seeds · Dispersal','Seeds unprotected!'],
+['🌰 Seed','Grow into new plants','Species dies out!']])+
+MEM('🧠','Roots ABSORB → Stem TRANSPORTS → Leaves MAKE FOOD → Flower REPRODUCES = A·T·M·R!');
+return WL(c,['roots','stem','leaf','flower','fruit','seed','photosynthesis','absorb','transport','xylem','phloem','germination','pollination'],[
+{q:'Which carries water from roots to leaves?',opts:['A. 🌸 Flower','B. 🍎 Fruit','C. 🌿 Stem'],ans:'C'},
+{q:'What do leaves do?',opts:['A. Absorb water','B. ☀️ Make food with sunlight','C. Anchor plant'],ans:'B'},
+{q:'What is inside a fruit?',opts:['A. 🌱 Roots','B. 🌰 Seeds','C. 🌿 Stem'],ans:'B'}]);},
+
+/* ─────────── P4: DIGESTIVE SYSTEM ─────────── */
+'digestive':function(){var c=
+B('🍎','Food travels 6 metres through your body!','bo')+
+FL([{em:'👄',w:'Mouth',c:'fo'},{em:'⬇️',w:'Oesophagus',c:'fbb'},{em:'🫃',w:'Stomach',c:'fr'},{em:'🌀',w:'Small intestine',c:'fg'},{em:'💩',w:'Large intestine',c:'ft'}])+
+TBL(['Part','Job','Picture it as'],[
+['👄 Mouth','Teeth crush · Saliva softens + starts digestion','Blender 🥣'],
+['⬇️ Oesophagus','Pushes food DOWN — NOT digestion — just transport!','Water slide 🎢'],
+['🫃 Stomach','Churns food + acid → liquid (chyme)','Washing machine 🫧'],
+['🌀 Small intestine','Absorbs ALL nutrients into blood · MOST important!','6-metre sponge 🧽'],
+['💩 Large intestine','Absorbs water back · Forms waste','Water recycler 💧']])+
+SC('Food in mouth → chewed + saliva → slides down oesophagus → stomach churns with acid 2-4 hours → small intestine squeezes goodness into blood → large intestine takes water → rest exits! 🚽')+
+CMP({em:'🌀',t:'Small intestine = STAR!',b:'6 metres long!<br/>Digests + absorbs nutrients<br/>Millions of tiny folds inside'},{em:'💩',t:'Large intestine',b:'1.5 metres long<br/>Absorbs water only<br/>Forms solid waste'})+
+MEM('🧠','My Old Stomach Sounds Loud! = Mouth · Oesophagus · Stomach · Small intestine · Large intestine');
+return WL(c,['mouth','oesophagus','stomach','small intestine','large intestine','saliva','digestion','absorption','nutrients','enzyme','chyme'],[
+{q:'Where is MOST food absorbed into blood?',opts:['A. 🫃 Stomach','B. 💩 Large intestine','C. 🌀 Small intestine'],ans:'C'},
+{q:'What does the oesophagus do?',opts:['A. Digest with acid','B. ⬇️ Transport food to stomach','C. Absorb nutrients'],ans:'B'},
+{q:'Digestion BEGINS at...',opts:['A. 🫃 Stomach','B. 👄 Mouth','C. 🌀 Small intestine'],ans:'B'}]);},
+
+/* ─────────── P4: STATES OF MATTER ─────────── */
+'matter':function(){var c=
+B('🔄','Everything is solid, liquid or gas — and can change!','bb')+
+CG([CV('🧊','Solid','Fixed SHAPE ✅ Fixed VOLUME ✅ · Packed tight · Cannot compress · Ice · Rock · Wood','cb'),CV('💧','Liquid','NO fixed shape ❌ Fixed VOLUME ✅ · Flows · Takes container shape · Water · Juice','ct'),CV('💨','Gas','NO fixed shape ❌ NO fixed volume ❌ · Fills container · Can compress · Steam · Air','cp')])+
+SC('Ice cube 🧊 keeps its shape (solid). Add heat → melts to liquid water 💧 that takes any shape. Boil → becomes steam 💨 filling the whole room. Cool steam on mirror → water droplets form again! Same water — 3 different forms!')+
+ST('🔄 How states change — with heat added or removed')+
+FL([{em:'🧊',w:'Solid',c:'fbb'},{em:'🔥 MELTING',w:'heat added',c:'fr'},{em:'💧',w:'Liquid',c:'ft'},{em:'🔥 EVAPORATION',w:'heat added',c:'fr'},{em:'💨',w:'Gas',c:'fp'}])+
+FL([{em:'💨',w:'Gas',c:'fp'},{em:'❄️ CONDENSATION',w:'heat removed',c:'fbb'},{em:'💧',w:'Liquid',c:'ft'},{em:'❄️ FREEZING',w:'heat removed',c:'fbb'},{em:'🧊',w:'Solid',c:'fbb'}])+
+TBL(['Change','Direction','Heat?','Example'],[
+['🔥 Melting','Solid → Liquid','ADDED','Ice melting on warm day'],
+['❄️ Freezing','Liquid → Solid','REMOVED','Water in freezer → ice'],
+['☀️ Evaporation','Liquid → Gas','ADDED','Puddle drying in sun'],
+['💧 Condensation','Gas → Liquid','REMOVED','Cold glass gets wet outside'],
+['🫧 Boiling','Liquid → Gas fast','ADDED','Water bubbling in pot']])+
+MEM('🧠','Heat IN = things spread out (melt or evaporate). Heat OUT = things pack together (freeze or condense).');
+return WL(c,['solid','liquid','gas','melting','freezing','evaporation','condensation','boiling','particle','matter','volume','shape','compress'],[
+{q:'Water becoming ice is...',opts:['A. 🔥 Melting','B. ☀️ Evaporation','C. ❄️ Freezing'],ans:'C'},
+{q:'Which has NO fixed shape AND no fixed volume?',opts:['A. 🧊 Solid','B. 💨 Gas','C. 💧 Liquid'],ans:'B'},
+{q:'Evaporation needs...',opts:['A. ❄️ Heat removed','B. 🔥 Heat added','C. Nothing'],ans:'B'}]);},
+
+/* ─────────── P4: LIGHT & SHADOWS ─────────── */
+'light-p4':function(){var c=
+B('💡','Light travels straight — block it = shadow!','bo')+
+ST('🔦 Light sources — make their OWN light')+
+FL([{em:'☀️',w:'Sun',c:'fo'},{em:'🔦',w:'Torch',c:'fo'},{em:'🕯️',w:'Candle',c:'fo'},{em:'💡',w:'Bulb',c:'fo'},{em:'⭐',w:'Stars',c:'fo'},{em:'🔥',w:'Fire',c:'fo'}])+
+SC('⚠️ Moon does NOT make own light — it REFLECTS sunlight. Mirror also reflects. Neither is a light source!','⚠️ Not a light source!')+
+CG([CV('🪟','Transparent','ALL light passes through · See CLEARLY · Glass · Cling wrap','cb'),CV('🌫️','Translucent','SOME light · Blurry · Frosted glass · Wax paper','ct'),CV('🧱','Opaque','NO light passes → SHADOW forms! · Wood · Metal · Brick','cp'),CV('🌑','Shadow needs...','Only OPAQUE objects make shadows! Transparent = no shadow.','cr')])+
+ST('👤 How shadow forms')+
+FL([{em:'🔦',w:'Light source',c:'fo'},{em:'➡️',w:'Travels STRAIGHT',c:'fbb'},{em:'🧱',w:'Hits OPAQUE object',c:'fp'},{em:'🚫',w:'Light BLOCKED',c:'fr'},{em:'👤',w:'SHADOW behind!',c:'fg'}])+
+CMP({em:'🔦🧱',t:'Torch CLOSE',b:'Shadow = BIG 📐<br/>Shadow = BLURRY 🌫️<br/>Light rays spread wide'},{em:'🔦 ··· 🧱',t:'Torch FAR',b:'Shadow = small 📐<br/>Shadow = SHARP ✨<br/>Light rays more parallel'})+
+FL([{em:'🌅',w:'Morning sun LOW → LONG shadow',c:'fo'},{em:'☀️',w:'Noon sun HIGH → SHORT shadow',c:'fg'},{em:'🌇',w:'Evening sun LOW → LONG shadow',c:'fo'}])+
+MEM('🧠','CLOSER = BIGGER + BLURRIER. FARTHER = smaller + sharper. High sun = short shadow. Low sun = long shadow!');
+return WL(c,['light source','transparent','translucent','opaque','shadow','straight line','reflect','shadow size'],[
+{q:'Torch moved CLOSER — shadow becomes...',opts:['A. Smaller + sharper','B. 📐 Bigger + blurrier','C. Same'],ans:'B'},
+{q:'Which makes NO shadow?',opts:['A. 🪵 Wood','B. 🪟 Clear glass','C. 🔩 Metal'],ans:'B'},
+{q:'Shadow is LONGEST when sun is...',opts:['A. ☀️ High at noon','B. 🌅 Low — morning or evening','C. 🌤️ Cloudy'],ans:'B'}]);},
+
+/* ─────────── P4: HEAT ENERGY ─────────── */
+'heat':function(){var c=
+B('🌡️','Heat flows HOT to COLD. Conductors let it. Insulators block it!','bo')+
+CG([CV('🌡️','Temperature','How hot or cold · Measured in °C · Use a thermometer','co'),CV('➡️','Heat transfer','ALWAYS flows HOT → COLD · Never the reverse!','cr'),CV('🥄','Conductors','Heat passes EASILY · All metals — copper · iron · aluminium','cb'),CV('🧤','Insulators','BLOCKS heat · Wood · Plastic · Rubber · Air · Wool','cg2')])+
+SC('Metal spoon in hot soup 🍲 → handle gets HOT fast! Metal conducts heat. Wooden spoon in same soup → handle stays COOL. Wood insulates. That is why pots have wooden handles — to keep YOUR hands safe!')+
+FL([{em:'🔥',w:'Hot object high temp',c:'fr'},{em:'➡️➡️',w:'Heat flows this way',c:'fo'},{em:'❄️',w:'Cool object low temp',c:'fbb'},{em:'⚖️',w:'Same temp → STOP',c:'fg'}])+
+TBL(['Material','Type','Used for'],[
+['🔌 Copper','Best conductor','Wires · Pots'],
+['⚙️ Iron / Steel','Good conductor','Pans · Nails · Rails'],
+['🥤 Aluminium','Good conductor','Foil · Aircraft · Cans'],
+['🪵 Wood','Insulator','Pot handles · Floors'],
+['🧴 Plastic','Insulator','Wire coating · Handles'],
+['🧶 Rubber','Insulator','Gloves · Oven mitts'],
+['💨 Air','Insulator','Double-glazed windows']])+
+MEM('🧠','Metal = CONDUCTOR (ouch!). Wood/Plastic = INSULATOR (safe!). Heat always flows HOT → COLD. Never the other way!');
+return WL(c,['temperature','thermometer','heat','conductor','insulator','thermal energy','conduction','celsius','absorb','release','expand','contract'],[
+{q:'Best conductor of heat?',opts:['A. 🧶 Rubber','B. 🔌 Copper','C. 🧴 Plastic'],ans:'B'},
+{q:'Heat flows from _____ to _____ objects.',opts:['A. cold to hot','B. big to small','C. 🔥 hot to ❄️ cold'],ans:'C'},
+{q:'Why do pots have plastic handles?',opts:['A. Conducts heat','B. 🧤 Insulates — keeps hands safe','C. Waterproof'],ans:'B'}]);},
+
+/* ─────────── P5: REPRODUCTION ─────────── */
+'reproduction':function(){var c=
+B('🌸','Plants + animals reproduce so their species survives!','bg')+
+SC('Bee lands on flower for nectar. Yellow POLLEN sticks to its body. Bee flies to another flower. Pollen falls onto the sticky STIGMA. POLLINATION done! Flower makes fruit with seeds. Seeds travel → grow into a new plant! 🐝')+
+FL([{em:'🌺',w:'Flower with anther (pollen)',c:'fp'},{em:'🐝',w:'Pollinator visits',c:'fo'},{em:'🌼',w:'Pollen → STIGMA',c:'fg'},{em:'🍎',w:'Fruit + seeds form',c:'fr'},{em:'🌱',w:'Seed grows new plant!',c:'ft'}])+
+TBL(['Pollination type','How?','Flower features'],[
+['🐝 Insect','Bee · butterfly carry pollen','Bright petals · Sweet scent · Sticky pollen · Nectar'],
+['💨 Wind','Wind blows pollen','Small dull petals · No scent · Light smooth pollen · Lots of it']])+
+ST('🌱 Seed dispersal — how seeds travel far')+
+CG([CV('💨','Wind','Light + fluffy or winged · Dandelion · Maple · Cotton','cb'),CV('🌊','Water','Float · Waterproof · Coconut · Lotus · Sea bean','ct'),CV('🦊','Animal','Eaten (in poo) OR hooks on fur · Durian · Burdock · Berries','cg2'),CV('💥','Explosion','Pod SNAPS open! Seeds shoot out! · Balsam · Touch-me-not · Pea','cr')])+
+CMP({em:'🥚',t:'Oviparous — lay EGGS',b:'Fish · Frog · Reptile · Bird · Insect<br/>Eggs outside mother\'s body'},{em:'👶',t:'Viviparous — LIVE birth',b:'Most Mammals — dog · cat · human<br/>Baby grows inside · Born alive · Milk 🍼'})+
+MEM('🧠','Oviparous = eggs 🥚. Viviparous = alive 👶. Only mammals feed babies with MILK!');
+return WL(c,['pollination','anther','stigma','pollen','seed dispersal','wind dispersal','water dispersal','animal dispersal','explosion dispersal','oviparous','viviparous','fertilisation'],[
+{q:'What does a bee do in plant reproduction?',opts:['A. Disperses seeds','B. 🐝 Transfers pollen anther→stigma','C. Waters plant'],ans:'B'},
+{q:'Dandelion seeds are dispersed by...',opts:['A. 🌊 Water','B. 💨 Wind','C. 💥 Explosion'],ans:'B'},
+{q:'Which animals are OVIPAROUS?',opts:['A. 🐕 Dog + cat','B. 🐋 Whale + dolphin','C. 🐟 Fish + bird'],ans:'C'}]);},
+
+/* ─────────── P5: WATER CYCLE ─────────── */
+'water-cycle':function(){var c=
+B('💧','Water travels forever — same water, different forms!','bb')+
+SC('The water you drink TODAY might have been inside a dinosaur 65 million years ago! 🦕 Same water — going round and round forever! The water cycle NEVER stops!')+
+FL([{em:'☀️💧',w:'1. EVAPORATION Sun heats water → rises',c:'fo'},{em:'☁️',w:'2. CONDENSATION Cools → forms clouds',c:'fbb'},{em:'🌧',w:'3. PRECIPITATION Falls as rain · snow · hail',c:'ft'},{em:'🌊',w:'4. RUN-OFF Flows to rivers + oceans',c:'fg'}])+
+CG([CV('☀️','Evaporation','Sun HEATS water · Becomes invisible vapour · Rises up into sky','co'),CV('☁️','Condensation','Vapour cools high up · Forms tiny droplets · Groups = clouds!','cb'),CV('🌧','Precipitation','Droplets get HEAVY · Falls as rain · snow · hail','ct'),CV('🌊','Collection','Flows into rivers + oceans · Some soaks into ground · Cycle RESTARTS!','cg2')])+
+TBL(['Step','Needs heat?','Example'],[
+['☀️ Evaporation','✅ YES — heat added','Puddle drying in sun'],
+['☁️ Condensation','❌ NO — heat released','Cold glass gets wet'],
+['🌧 Precipitation','❌ NO — gravity','Rain · Snow · Hail'],
+['🌊 Run-off','❌ NO — gravity','Rivers flowing to sea']])+
+MEM('🧠','Evaporation · Condensation · Precipitation · Run-off — water NEVER disappears, just changes form!');
+return WL(c,['evaporation','condensation','precipitation','run-off','water vapour','water cycle','cloud','rain','snow','groundwater','transpiration'],[
+{q:'What causes ocean water to evaporate?',opts:['A. 💨 Wind','B. ☀️ Heat from sun','C. ❄️ Cold temperature'],ans:'B'},
+{q:'What is condensation?',opts:['A. Water turning to vapour','B. Rain falling','C. ☁️ Vapour cooling → tiny droplets'],ans:'C'},
+{q:'Water falling from clouds is called...',opts:['A. Evaporation','B. 🌧 Precipitation','C. Transpiration'],ans:'B'}]);},
+
+/* ─────────── P5: HEART & LUNGS ─────────── */
+'respiratory':function(){var c=
+B('❤️','Lungs breathe O₂ in. Heart pumps it everywhere!','bo')+
+FL([{em:'👃',w:'Nose / Mouth Air in',c:'fbb'},{em:'🫧',w:'Trachea windpipe',c:'ft'},{em:'🌿',w:'Bronchi splits',c:'fg'},{em:'🫁',w:'Lungs — alveoli absorb O₂',c:'fp'},{em:'🌬️',w:'CO₂ breathed OUT',c:'fr'}])+
+CG([CV('👃','Inhale — breathe IN','O₂ enters · Nose filters dust · Warms air · Down trachea','cb'),CV('🌬️','Exhale — breathe OUT','CO₂ leaves · Water vapour leaves too · Why mirror fogs!','ct'),CV('🫁','Alveoli','Tiny air sacs in lungs · MILLIONS of them · O₂ → blood · CO₂ ← blood','cp'),CV('🎈','Diaphragm','Muscle under lungs · Moves DOWN → lungs expand → air rushes in!','cg2')])+
+SC('Heart is a PUMP with 2 sides! Right side sends blood to lungs to pick up oxygen. Left side pumps oxygen-rich blood to EVERY body part — toes, brain, fingers! Blood does this 1000 times a day! 💪')+
+FL([{em:'❤️R',w:'Right heart',c:'fr'},{em:'🫁',w:'Lungs — get O₂',c:'fp'},{em:'❤️L',w:'Left heart',c:'fr'},{em:'🌍',w:'WHOLE body gets O₂',c:'fg'},{em:'❤️R',w:'Back to heart',c:'fr'}])+
+CG([CV('🩸','Arteries','AWAY from heart · Thick walls · High pressure · Bright red O₂ blood','cr'),CV('🩸','Veins','BACK to heart · Thin walls · Dark red CO₂ blood · Have valves','cp'),CV('🩸','Capillaries','Tiny — 1 cell thick! · O₂ enters cells · CO₂ enters blood','ct'),CV('❤️','Heart','4 chambers · Pumps non-stop! · Size of your fist · Lub-dub!','cr')])+
+CMP({em:'🫁',t:'Respiratory System',b:'Breathing · Lungs · Trachea<br/>Takes in O₂ · Gets rid of CO₂'},{em:'❤️',t:'Circulatory System',b:'Heart · Arteries · Veins<br/>Pumps blood · Delivers O₂ everywhere'})+
+MEM('🧠','Right heart → Lungs → Left heart → Body. Arteries Away, Veins Return! (AAV)');
+return WL(c,['lungs','heart','trachea','bronchi','alveoli','oxygen','carbon dioxide','artery','vein','capillary','blood','pulse','circulation','respiration','inhalation','exhalation','diaphragm'],[
+{q:'Which vessels carry blood AWAY from heart?',opts:['A. Veins','B. Capillaries','C. 🩸 Arteries'],ans:'C'},
+{q:'What gas do we breathe IN?',opts:['A. Carbon dioxide','B. Nitrogen','C. 💨 Oxygen'],ans:'C'},
+{q:'Which side of heart pumps to LUNGS?',opts:['A. ❤️ Right side','B. Left side','C. Both same time'],ans:'A'}]);},
+
+/* ─────────── P5: ELECTRICAL CIRCUIT ─────────── */
+'electrical':function(){var c=
+B('⚡','Complete circuit = electricity flows = things WORK!','bp')+
+CG([CV('🔋','Battery / Cell','Provides energy · Has + and − terminals · The energy source!','co'),CV('💡','Bulb','Electrical → LIGHT energy · Also gives heat','cb'),CV('🔌','Switch','Opens (OFF ❌) or Closes (ON ✅) the circuit · Controls flow','cp'),CV('📻','Buzzer','Electrical → SOUND energy · Beeps when electricity flows','ct'),CV('🌀','Motor','Electrical → KINETIC energy · Makes things SPIN!','cg2'),CV('➖','Wire','Connects all parts · Lets electricity flow around circuit','cr')])+
+SC('Circuit = RACE TRACK 🏎️! Battery = petrol station. Wire = track. Electricity = car. Bulb = checkpoint. ANY part broken → car stops → bulb OFF! Track must be COMPLETE!')+
+CMP({em:'✅',t:'Closed circuit — ON',b:'Complete loop · No gaps<br/>Electricity flows all way round<br/>💡 Bulb GLOWS!'},{em:'❌',t:'Open circuit — OFF',b:'A gap (switch open) somewhere<br/>Electricity CANNOT flow<br/>💡 Bulb is OFF'})+
+CMP({em:'🔗',t:'SERIES — 1 loop',b:'All in ONE loop<br/>One blows = ALL go out ❌<br/>More bulbs = dimmer 🕯️'},{em:'🔀',t:'PARALLEL — separate loops',b:'Each has OWN loop<br/>One blows = others still ON ✅<br/>Same brightness always!'});
+return WL(c,['circuit','battery','cell','switch','bulb','buzzer','motor','conductor','insulator','open circuit','closed circuit','series','parallel','current','voltage'],[
+{q:'Series circuit — one bulb blows. Others...',opts:['A. Only that one off','B. ❌ ALL go out','C. Others glow brighter'],ans:'B'},
+{q:'What allows electricity to flow?',opts:['A. Open switch','B. Broken wire','C. ✅ Complete closed loop'],ans:'C'},
+{q:'Which keeps others on if one blows?',opts:['A. 🔗 Series','B. 🔀 Parallel','C. Both same'],ans:'B'}]);},
+
+/* ─────────── P6: PHOTOSYNTHESIS ─────────── */
+'photosynthesis':function(){var c=
+B('🍃','Leaf = solar-powered food factory!','bg')+
+SC('A leaf is a tiny kitchen powered by the sun ☀️! Sunlight = electricity. Water = ingredient 1. CO₂ = ingredient 2. Leaf makes GLUCOSE (plant food) AND releases OXYGEN for us to breathe! 🎁')+
+CMP({em:'📥',t:'Goes INTO leaf',b:'☀️ Sunlight (energy)<br/>💧 Water (from roots)<br/>💨 CO₂ (from air via stomata)'},{em:'📤',t:'Comes OUT of leaf',b:'🍬 Glucose — plant\'s food!<br/>🌬️ Oxygen — for us!'})+
+FL([{em:'☀️',w:'Sunlight',c:'fo'},{em:'+',w:''},{em:'💧',w:'Water from roots',c:'fbb'},{em:'+',w:''},{em:'💨',w:'CO₂ from air',c:'ft'},{em:'=',w:''},{em:'🍬',w:'Glucose food!',c:'fg'},{em:'+',w:''},{em:'🌬️',w:'Oxygen for us!',c:'fp'}])+
+CG([CV('💨→🍃','CO₂ enters leaf','Through STOMATA — tiny holes on underside of leaf · During daytime','cb'),CV('🍃→🌬️','O₂ exits leaf','Oxygen leaves through stomata · Bonus product!','cg2'),CV('💧→🌬️','Water exits leaf','Water vapour also exits through stomata = TRANSPIRATION','ct'),CV('🌙','At night...','No sunlight → photosynthesis STOPS · Stomata may close','cp')])+
+CG([CV('☀️','Needs sunlight','More light = faster photosynthesis · Shade = slower · No light = STOPS','co'),CV('💧','Needs water','From soil via roots · Drought = slows down','cb'),CV('💨','Needs CO₂','From air · More CO₂ = faster rate','ct'),CV('💚','Needs chlorophyll','Green pigment in leaves · Absorbs light · Inside chloroplasts','cg2')])+
+MEM('🧠','Sunlight + Water + CO₂ → Glucose + Oxygen. Plants make food AND give us oxygen! Without plants = no food chain!');
+return WL(c,['photosynthesis','chlorophyll','chloroplast','stomata','glucose','oxygen','carbon dioxide','water','sunlight','leaf','producer','transpiration'],[
+{q:'Through which structure does CO₂ enter leaf?',opts:['A. 🌱 Roots','B. 💨 Stomata','C. 🌿 Xylem'],ans:'B'},
+{q:'What does plant do with glucose?',opts:['A. Breathe it out','B. 🍬 Use for energy + growth','C. Mix with water'],ans:'B'},
+{q:'What is released by plant as a bonus?',opts:['A. 💨 Carbon dioxide','B. 💧 Water','C. 🌬️ Oxygen'],ans:'C'}]);},
+
+/* ─────────── P6: ENERGY CONVERSION ─────────── */
+'energy':function(){var c=
+B('🔄','Energy changes form — NEVER created or destroyed!','bp')+
+CG([CV('⚡','Electrical','Powers appliances · From battery or socket · Flows through wires','co'),CV('💡','Light','From sun · bulbs · fire · Lets us see!','cb'),CV('🔊','Sound','Vibrations we hear · Speaker · Thunder · Drum','cp'),CV('♨️','Heat / Thermal','From friction · sun · burning · Flows hot → cold','cr'),CV('🏃','Kinetic','Energy of MOVING things · Car · Wind · Flowing water','cg2'),CV('⚙️','Potential (stored)','Stored energy ready to use · Spring · Raised weight · Battery chemical','ct')])+
+SC('Energy is like water — can change shape but NEVER disappear! Battery uses chemical energy → converts to electrical → to light + heat. Nothing is lost! 🔋')+
+TBL(['Device','Energy IN','Energy OUT','Loses some as...'],[
+['🔦 Torch','⚙️ Chemical (battery)','💡 Light','♨️ Heat'],
+['📻 Radio','⚡ Electrical','🔊 Sound','♨️ Heat'],
+['🌀 Fan','⚡ Electrical','🏃 Kinetic (spin)','♨️ Heat'],
+['🌞 Solar panel','💡 Light (sunlight)','⚡ Electrical','♨️ Heat'],
+['🎸 Guitar','🏃 Kinetic (pluck)','🔊 Sound','tiny ♨️'],
+['🚂 Steam train','♨️ Heat (coal)','🏃 Kinetic (move)','🔊 Sound + ♨️']])+
+CG([CV('✅','Energy conserved','Total ALWAYS stays same · Cannot create energy from nothing!','cg2'),CV('❌','Energy destroyed?','NEVER! Energy just changes form — it is NEVER destroyed','cr'),CV('♨️','Wasted energy','Some becomes unwanted heat · Still not destroyed · Just less useful','co'),CV('💯','Efficiency','Best devices waste LEAST heat · LED bulb better than old bulb!','cb')])+
+MEM('🧠','Energy just changes CLOTHES! Chemical → Electrical → Light / Sound / Heat / Kinetic. Total always stays same!');
+return WL(c,['energy','kinetic','potential','chemical','electrical','light energy','heat energy','sound energy','energy conversion','conservation of energy','efficiency'],[
+{q:'Radio converts electrical energy to...',opts:['A. ⚙️ Chemical','B. 🔊 Sound','C. 💡 Light'],ans:'B'},
+{q:'Energy can be...',opts:['A. Created from nothing ❌','B. Destroyed completely ❌','C. ✅ Converted from one form to another'],ans:'C'},
+{q:'Torch: chemical → electrical → ?',opts:['A. ⚡ Electrical only','B. 🔊 Sound','C. 💡 Light + ♨️ Heat'],ans:'C'}]);},
+
+/* ─────────── P6: FORCES ─────────── */
+'forces':function(){var c=
+B('⚖️','Forces push or pull — mass stays, weight changes!','bb')+
+CG([CV('🌍','Gravity','Pulls ALL objects toward Earth centre · Causes things to FALL · Weight = gravity pulling on your mass','cb'),CV('🛑','Friction','Between two surfaces · OPPOSES motion (slows things) · Creates heat!','cr'),CV('⚖️','Mass vs Weight','Mass (kg) = amount of matter · NEVER changes · Weight (N) = gravity × mass · CHANGES!','co'),CV('🪝','Spring force','Stretches when force applied · More force = more stretch · Do not pass elastic limit!','cg2')])+
+CMP({em:'⚖️',t:'MASS (kg)',b:'Amount of MATTER in you<br/>NEVER changes anywhere!<br/>60 kg on Earth = 60 kg on Moon<br/>Same everywhere in universe!'},{em:'🌕',t:'WEIGHT (N)',b:'Gravity PULLING on your mass<br/>CHANGES with gravity!<br/>Earth: 600 N · Moon: 100 N<br/>Space: 0 N!'})+
+FL([{em:'🌍',w:'Earth gravity = 10 N/kg → 60 kg = 600 N weight',c:'fg'},{em:'VS',w:''},{em:'🌕',w:'Moon gravity = 1.6 N/kg → 60 kg = 96 N weight',c:'fbb'}])+
+MEM('🧠','Mass = same EVERYWHERE. Weight = depends on gravity. Moon gravity is 1/6 of Earth → weight 1/6 too! But you are still SAME amount of matter!')+
+CG([CV('🧱','Rough surface','MORE friction · Slows more · Sandpaper · Carpet · Road','cr'),CV('🧊','Smooth surface','LESS friction · Slides easily · Ice · Glass · Wet tiles','cb'),CV('🛞','Useful friction!','NEED friction to walk · Brakes · Tyre grip · Writing with pen!','cg2'),CV('🌡️','Friction = heat!','Rub hands → warm! Brakes get hot! Meteorite burns in atmosphere!','co')])+
+FL([{em:'🪝',w:'Spring at rest (no force)',c:'fg'},{em:'⬇️ force',w:''},{em:'📏',w:'Spring STRETCHES',c:'fo'},{em:'More force →',w:''},{em:'📏📏',w:'MORE extension',c:'fr'},{em:'⚠️',w:'Elastic limit! → permanently stretched!',c:'fr'}])+
+MEM('🧠','More force on spring = more extension. Pass elastic limit = spring does NOT go back! Mass stays same everywhere. Weight changes with gravity!');
+return WL(c,['force','gravity','weight','mass','friction','newton','spring','elastic limit','extension','compression','balanced','unbalanced','air resistance'],[
+{q:'60 kg person on Moon. MASS on Moon is...',opts:['A. 10 kg','B. 60 kg — same!','C. 360 kg'],ans:'B'},
+{q:'Which surface gives MOST friction?',opts:['A. 🧊 Ice','B. 🍶 Glass','C. 🧱 Sandpaper'],ans:'C'},
+{q:'Friction always _____ moving objects.',opts:['A. Speeds up','B. 🛑 Slows down','C. Changes direction'],ans:'B'}]);},
+
+/* ─────────── P6: FOOD CHAINS & WEBS ─────────── */
+'environment':function(){var c=
+B('🌍','Every creature depends on others — in a web!','bg')+
+SC('Every food chain starts with a PLANT (producer). Plant uses sunlight to make food. Animal eats plant (primary). Another animal eats THAT animal (secondary). Arrow = "is eaten by" AND = direction energy flows! 🌾→🐛→🐦→🦅')+
+FL([{em:'☀️',w:'Sun energy',c:'fo'},{em:'🌾',w:'PRODUCER Plant makes food',c:'fg'},{em:'🐛',w:'PRIMARY eats plant',c:'ft'},{em:'🐦',w:'SECONDARY eats primary',c:'fbb'},{em:'🦅',w:'TERTIARY top predator',c:'fp'}])+
+CG([CV('🌾','Producer','Makes OWN food · Always FIRST · Plants · Algae · No producer = no chain!','cg2'),CV('🐛','Primary consumer','Eats the producer · Herbivore · Caterpillar · Rabbit · Cow','co'),CV('🐦','Secondary consumer','Eats primary · Carnivore or omnivore · Bird · Fox · Frog','cb'),CV('🦅','Tertiary consumer','Top predator · Hawk · Eagle · Shark · Lion','cp'),CV('🦠','Decomposer','Breaks down DEAD things → nutrients back to soil → plants use again!','ct'),CV('🕸️','Food web','MANY food chains linked · More realistic · Animals eat MORE than one thing!','cr')])+
+CMP({em:'🔗',t:'Food Chain — simple',b:'ONE straight line<br/>Grass → Rabbit → Fox<br/>Arrow = energy flows + "eaten by"<br/>Less realistic'},{em:'🕸️',t:'Food Web — realistic!',b:'MANY food chains connected<br/>All feeding relationships shown<br/>Remove one = affects EVERYTHING'})+
+SC('Grass→Caterpillar→Bird→Hawk. Remove caterpillars (pesticide). Grass GROWS TOO MUCH (nothing eats it). Birds have NO FOOD → decrease. Hawk has LESS food → also decreases. ONE change = chain reaction through WHOLE web! 😱','⚠️ What happens when we remove one!')+
+TBL(['Term','Meaning','Example'],[
+['🌿 Herbivore','Eats ONLY plants','Rabbit · Cow · Caterpillar · Elephant'],
+['🦁 Carnivore','Eats ONLY animals','Lion · Shark · Eagle · Frog'],
+['🐻 Omnivore','Eats plants AND animals','Human · Bear · Crow · Rat'],
+['🦁 Predator','Hunts and eats other animals','Lion eats zebra · Hawk eats mouse'],
+['🦓 Prey','Animal that is hunted','Zebra · Mouse · Rabbit'],
+['🌍 Ecosystem','All living + non-living things in area','Pond · Rainforest · Desert'],
+['🏠 Habitat','Where organism LIVES','Pond is habitat of frog'],
+['🦠 Decomposer','Breaks down dead matter','Bacteria · Fungi → nutrients to soil']])+
+MEM('🧠','Arrow → = energy flows + "eaten by". Producer ALWAYS starts. Decomposers RECYCLE — close the loop! Remove one species → whole web is affected!');
+return WL(c,['food chain','food web','producer','consumer','decomposer','predator','prey','herbivore','carnivore','omnivore','ecosystem','habitat','population','adaptation'],[
+{q:'Arrow → in food chain means...',opts:['A. Direction water flows','B. ⚡ Energy flows + "eaten by"','C. Who is bigger'],ans:'B'},
+{q:'What do decomposers do?',opts:['A. Eat live animals','B. Make food from sunlight','C. 🦠 Break down dead matter → nutrients to soil'],ans:'C'},
+{q:'Grass→Rabbit→Fox. Remove rabbits. Grass...',opts:['A. 🌾 Increases (less eaten)','B. Decreases','C. Nothing changes'],ans:'A'}]);}
+
+}; // end LESSONS
+
+/* ── SYLLABUS ── */
+var SYL={
+P3:[{id:'div-living',em:'🦋',lbl:'Living Things'},{id:'div-mat',em:'🧱',lbl:'Materials'},{id:'lifecycles',em:'🌱',lbl:'Life Cycles'},{id:'magnets',em:'🧲',lbl:'Magnets'}],
+P4:[{id:'plant-sys',em:'🌿',lbl:'Plant System'},{id:'digestive',em:'🍎',lbl:'Digestive System'},{id:'matter',em:'💧',lbl:'States of Matter'},{id:'light-p4',em:'💡',lbl:'Light & Shadows'},{id:'heat',em:'🔥',lbl:'Heat Energy'}],
+P5:[{id:'reproduction',em:'🌸',lbl:'Reproduction'},{id:'water-cycle',em:'🌧',lbl:'Water Cycle'},{id:'respiratory',em:'❤️',lbl:'Heart & Lungs'},{id:'electrical',em:'⚡',lbl:'Electrical Circuit'}],
+P6:[{id:'photosynthesis',em:'☀️',lbl:'Photosynthesis'},{id:'energy',em:'🔋',lbl:'Energy Conversion'},{id:'forces',em:'🏋️',lbl:'Forces'},{id:'environment',em:'🌍',lbl:'Food Chains & Webs'}]
+};
+
+/* ── QA BANK ── */
+var QA=[
+{q:'Why is weight less on the Moon?',a:'Same MASS — but less WEIGHT because Moon gravity is 6× weaker!',
+ steps:['Mass = amount of matter in you · Measured in kg · NEVER changes anywhere!','Weight = gravity pulling on mass · Measured in Newtons (N) · CHANGES with gravity!','Moon gravity = 1/6 of Earth → weight on Moon = 1/6 of Earth weight!'],
+ L:{em:'🌍',t:'On Earth',b:'60 kg mass<br/>Weight = 600 N<br/>Gravity = 10 N/kg'},R:{em:'🌕',t:'On Moon',b:'60 kg mass (SAME!)<br/>Weight = 100 N<br/>Gravity = 1.6 N/kg'},
+ fun:'Astronauts jump super high on Moon! They weigh 6× less but are same amount of matter!',tip:'Mass = same always. Weight = gravity × mass. Moon = 1/6 weight!'},
+{q:'How does photosynthesis work?',a:'Leaf uses sunlight + water + CO₂ to make glucose food and oxygen!',
+ steps:['CO₂ enters leaf through tiny holes called STOMATA on underside of leaf.','Water comes UP from roots through the stem into leaf.','Sunlight powers the reaction → glucose (plant food) made → oxygen released for us!'],
+ L:{em:'📥',t:'Goes IN',b:'☀️ Sunlight<br/>💧 Water from roots<br/>💨 CO₂ via stomata'},R:{em:'📤',t:'Comes OUT',b:'🍬 Glucose — plant food!<br/>🌬️ Oxygen — for us!'},
+ fun:'One large tree makes enough oxygen for 4 people to breathe for a whole year!',tip:'Sunlight + Water + CO₂ → Glucose + Oxygen. Leaf = solar food factory!'},
+{q:'What is the water cycle?',a:'Water evaporates → forms clouds → rains down → flows back — forever!',
+ steps:['Sun heats water in ocean → EVAPORATES → rises as invisible vapour.','High up it cools → CONDENSES into tiny droplets → clouds form in sky.','Droplets get heavy → PRECIPITATION → rain or snow falls back to Earth! Then runs off to ocean.'],
+ L:{em:'☀️',t:'Evaporation',b:'Heat turns water to vapour<br/>Rises up into sky'},R:{em:'☁️',t:'Condensation → Rain',b:'Vapour cools → clouds ☁️<br/>Then falls as 🌧 rain!'},
+ fun:'The water you drink today might have been inside a dinosaur! Same water cycles forever! 🦕',tip:'Evaporation = heat added. Condensation = cooling. Precipitation = falls as rain/snow!'},
+{q:'What is the difference between conductor and insulator?',a:'Conductors let heat/electricity pass through. Insulators BLOCK it!',
+ steps:['CONDUCTOR: heat or electricity flows through EASILY. All metals — copper, iron, aluminium.','INSULATOR: BLOCKS heat or electricity — wood, plastic, rubber, glass, air.','Wires = copper inside (conducts) + plastic outside (insulates). Safe combination!'],
+ L:{em:'🥄',t:'Conductor',b:'Metal spoon · Copper wire · Iron nail<br/>Heat + electricity PASS through easily'},R:{em:'🧤',t:'Insulator',b:'Rubber glove · Plastic handle · Wood<br/>Heat + electricity are BLOCKED'},
+ fun:'Diamond conducts heat better than copper — but does NOT conduct electricity!',tip:'Metal = conductor. Non-metal = usually insulator. Never touch bare wires!'},
+{q:'How do magnets work?',a:'Magnets have N and S poles — opposites attract, same poles repel!',
+ steps:['Every magnet has North (N) and South (S) poles. Poles are the STRONGEST parts.','Opposite poles (N meets S) → ATTRACT → snap together!','Same poles (N meets N) → REPEL → push away! Only iron/steel/nickel/cobalt are attracted.'],
+ L:{em:'🧲🧲',t:'N meets S = ATTRACT',b:'Opposite poles pull together<br/>SNAP! 💥 They stick!'},R:{em:'🔄',t:'N meets N = REPEL',b:'Same poles push away<br/>😤 Cannot be forced together'},
+ fun:'Earth is a giant magnet! Its iron core creates a magnetic field — that is why compasses work!',tip:'Opposite poles ATTRACT. Same poles REPEL. Magnetic = iron, steel, nickel, cobalt ONLY!'},
+{q:'Why do shadows change size?',a:'Torch closer = bigger shadow. Torch farther = smaller shadow!',
+ steps:['Light travels in STRAIGHT LINES. Hits OPAQUE object → cannot pass through.','Shadow forms BEHIND object. Same shape as the object.','Torch CLOSE → big blurry shadow. Torch FAR → small sharp shadow. Sun low in sky → long shadow!'],
+ L:{em:'🔦🧱',t:'Torch CLOSE',b:'Shadow = BIG 📐<br/>Shadow = BLURRY 🌫️'},R:{em:'🌞',t:'Sun HIGH at noon',b:'Shadow = SHORT<br/>Directly under you'},
+ fun:'At sunrise your shadow can be as long as a whole building! By noon it almost disappears!',tip:'Close = BIG blurry. Far = small sharp. High sun = short shadow. Low sun = long shadow!'}
+];
+
+/* ── APP STATE ── */
+var selLvl=null,selTopic=null,progress={},notes=[],uploads=[],lastTxt='';
+
+function sw(n){
+  document.querySelectorAll('.tb').forEach(function(b){b.classList.remove('on');});
+  document.querySelectorAll('.tc').forEach(function(c){c.classList.remove('on');});
+  document.querySelector('[onclick="sw(\''+n+'\')"]').classList.add('on');
+  document.getElementById('t'+n).classList.add('on');
+  if(n==='stars')renderStars();
+  if(n==='notes')renderNotes();
+}
+
+function buildLvls(){
+  var r=document.getElementById('lvlRow');
+  ['P3','P4','P5','P6'].forEach(function(l){
+    var b=document.createElement('button');
+    b.className='lvl-btn';b.textContent=l;
+    b.onclick=function(){
+      selLvl=l;selTopic=null;
+      document.querySelectorAll('.lvl-btn').forEach(function(x){x.classList.remove('on');});
+      b.classList.add('on');
+      buildTopics(l);
+      document.getElementById('topSec').style.display='block';
+      document.getElementById('goBtn').disabled=true;
+      document.getElementById('lessonOut').innerHTML='';
+    };
+    r.appendChild(b);
+  });
+}
+
+function buildTopics(l){
+  var g=document.getElementById('topGrid');g.innerHTML='';
+  SYL[l].forEach(function(t){
+    var c=document.createElement('div');c.className='topic-card';
+    c.innerHTML='<span class="t-em">'+t.em+'</span><div class="t-nm">'+t.lbl+'</div>';
+    c.onclick=function(){
+      selTopic=t;
+      document.querySelectorAll('.topic-card').forEach(function(x){x.classList.remove('on');});
+      c.classList.add('on');
+      document.getElementById('goBtn').disabled=false;
+    };
+    g.appendChild(c);
+  });
+}
+
+function showLesson(){
+  if(!selTopic)return;
+  var t=selTopic;
+  if(!progress[selLvl])progress[selLvl]=[];
+  if(!progress[selLvl].includes(t.lbl))progress[selLvl].push(t.lbl);
+  lastTxt=selLvl+': '+t.lbl;
+  if(L[t.id]){document.getElementById('lessonOut').innerHTML=L[t.id]();}
+  else{document.getElementById('lessonOut').innerHTML='<div class="emp"><div class="ee">🚧</div><div class="et">Coming soon!</div></div>';}
+}
+
+function buildChips(){
+  var el=document.getElementById('chips');
+  QA.forEach(function(d){
+    var c=document.createElement('span');c.className='chip';c.textContent=d.q;
+    c.onclick=function(){document.getElementById('qin').value=d.q;doAsk();};
+    el.appendChild(c);
+  });
+}
+
+function doAsk(){
+  var q=document.getElementById('qin').value.trim();if(!q)return;
+  document.getElementById('qin').value='';
+  var kw=q.toLowerCase(),best=null;
+  if(kw.includes('weight')||kw.includes('mass')||kw.includes('moon'))best=QA[0];
+  else if(kw.includes('photo')||kw.includes('glucose')||kw.includes('leaf')||kw.includes('plant food'))best=QA[1];
+  else if(kw.includes('water cycle')||kw.includes('rain')||kw.includes('evapor')||kw.includes('cloud'))best=QA[2];
+  else if(kw.includes('conduct')||kw.includes('insul'))best=QA[3];
+  else if(kw.includes('magnet')||kw.includes('pole')||kw.includes('attract')||kw.includes('repel'))best=QA[4];
+  else if(kw.includes('shadow')||kw.includes('opaque'))best=QA[5];
+  var ex=QA.find(function(d){return d.q.toLowerCase()===kw;});if(ex)best=ex;
+  if(best){renderQA(q,best);return;}
+  document.getElementById('qaOut').innerHTML='<div class="banner bg"><span class="b-em">🤔</span><div class="b-lbl">Hmm!</div><div class="b-txt">Try one of the topic chips above, or go to Learn and pick the topic!</div></div>';
+}
+
+function renderQA(q,d){
+  var steps=d.steps.map(function(s,i){return'<div class="sr"><div class="sn">'+(i+1)+'</div><div><div class="st3">'+s+'</div></div></div>';}).join('');
+  document.getElementById('qaOut').innerHTML=
+    '<div class="banner bp"><span class="b-em">💬</span><div class="b-lbl">Answer!</div><div class="b-txt">'+d.a+'</div></div>'+
+    CMP(d.L,d.R)+
+    MEM('🔑',d.fun,'#E1F5EE','#0F8C63','#0A5C41')+
+    '<div class="stitle">📋 Step by step</div>'+
+    '<div class="steps">'+steps+'</div>'+
+    MEM('🧠',d.tip);
+}
+
+function onFile(e){var f=e.target.files[0];if(f)processFile(f);}
+function processFile(file){
+  if(file.size>5*1024*1024){toast('File too big!');return;}
+  var r=new FileReader(),isImg=file.type.startsWith('image/');
+  if(isImg){r.onload=function(e){uploads.push({name:file.name,type:'image',data:e.target.result});renderFiles();};r.readAsDataURL(file);}
+  else{r.onload=function(e){uploads.push({name:file.name,type:'text',data:e.target.result});renderFiles();};r.readAsText(file);}
+}
+function renderFiles(){
+  var fl=document.getElementById('fList');fl.innerHTML='';
+  uploads.forEach(function(f,i){
+    var d=document.createElement('div');
+    d.style.cssText='display:flex;align-items:center;gap:9px;padding:9px 12px;background:#f8f6ff;border-radius:11px;margin-bottom:6px;border:2.5px solid #e8e4ff';
+    d.innerHTML='<span style="font-size:20px">'+(f.type==='image'?'🖼️':'📄')+'</span><span style="flex:1;font-size:11px;font-weight:900;color:#333">'+f.name+'</span><button style="padding:4px 10px;border-radius:8px;border:2px solid #d5ceff;background:#fff;font-size:11px;font-weight:900;cursor:pointer;color:#aaa" onclick="uploads.splice('+i+',1);renderFiles()">✕</button>';
+    fl.appendChild(d);
+  });
+  var fp=document.getElementById('fPreview'),fc=document.getElementById('fContent');
+  if(!uploads.length){fp.style.display='none';return;}
+  fp.style.display='block';fc.innerHTML='';
+  uploads.forEach(function(f){
+    var card=document.createElement('div');card.className='nc';
+    if(f.type==='image')card.innerHTML='<div class="nt"><span class="ntl">🖼️ '+f.name+'</span></div><img src="'+f.data+'" style="width:100%;border-radius:10px;margin-top:6px"/>';
+    else card.innerHTML='<div class="nt"><span class="ntl">📄 '+f.name+'</span></div><div class="nb">'+f.data.slice(0,200).replace(/</g,'&lt;')+'...</div>';
+    fc.appendChild(card);
+  });
+}
+function saveNote(){
+  var content=document.getElementById('nta').value.trim();
+  if(!content){toast('Write something first!');return;}
+  notes.push({content:content,lvl:document.getElementById('nLvl').value.trim(),topic:document.getElementById('nTopic').value.trim(),time:new Date().toLocaleTimeString()});
+  document.getElementById('nta').value='';document.getElementById('nLvl').value='';document.getElementById('nTopic').value='';
+  renderNotes();toast('Saved! ✅');
+}
+function renderNotes(){
+  var el=document.getElementById('nList');
+  if(!notes.length){el.innerHTML='<div class="emp" style="padding:14px 0"><div class="ee" style="font-size:36px">📝</div><div class="et" style="font-size:12px">No notes yet!</div></div>';return;}
+  el.innerHTML=notes.map(function(n,i){
+    return'<div class="nc"><div class="nt"><span class="ntl">'+(n.lvl?'<span style="background:#ede9ff;color:#5B4FCF;padding:2px 7px;border-radius:7px;font-size:9px;margin-right:4px">'+n.lvl+'</span>':'')+''+(n.topic||'Note')+'</span><button class="nd" onclick="notes.splice('+i+',1);renderNotes()">✕</button></div><div class="nb">'+n.content.slice(0,150)+(n.content.length>150?'...':'')+'</div><div style="font-size:9px;font-weight:800;color:#ccc;margin-top:4px">'+n.time+'</div></div>';
+  }).join('');
+}
+function copyLesson(){
+  if(!lastTxt){toast('Open a lesson first!');return;}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(lastTxt).then(function(){toast('Copied! 📋');});}
+  else{var ta=document.createElement('textarea');ta.value=lastTxt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('Copied! 📋');}
+}
+function exportNotes(){
+  if(!notes.length){toast('No notes yet!');return;}
+  var txt='MY SCIENCE NOTES\n\n'+notes.map(function(n,i){return'['+(i+1)+'] '+(n.lvl?n.lvl+' ':'')+''+(n.topic||'Note')+'\n'+n.content;}).join('\n\n---\n\n');
+  dlFile(txt,'MyNotes.txt');toast('Downloaded! ✅');
+}
+function exportStars(){
+  var lvls=['P3','P4','P5','P6'];
+  if(!lvls.some(function(l){return progress[l]&&progress[l].length;})){toast('Learn a topic first!');return;}
+  var txt='MY SCIENCE STARS ⭐\nDate: '+new Date().toLocaleDateString()+'\n\n';
+  lvls.forEach(function(l){
+    var total=SYL[l].length,done=(progress[l]||[]).length;
+    txt+=l+': '+done+'/'+total+'\n';
+    if(progress[l]&&progress[l].length)txt+=progress[l].map(function(t){return'  ✓ '+t;}).join('\n')+'\n';
+    txt+='\n';
+  });
+  dlFile(txt,'MyStars.txt');toast('Downloaded! ✅');
+}
+function dlFile(content,filename){var blob=new Blob([content],{type:'text/plain'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;a.click();URL.revokeObjectURL(a.href);}
+function renderStars(){
+  var el=document.getElementById('starsOut'),lvls=['P3','P4','P5','P6'];
+  if(!lvls.some(function(l){return progress[l]&&progress[l].length;})){el.innerHTML='<div class="emp"><div class="ee">🌱</div><div class="et">Learn a topic to earn stars!</div></div>';return;}
+  var html='';
+  lvls.forEach(function(l){
+    var total=SYL[l].length,done=(progress[l]||[]).length,pct=Math.round(done/total*100);
+    html+='<div class="pr"><span class="pl">'+l+'</span><div class="pb"><div class="pf" style="width:'+pct+'%"></div></div><span class="pn">'+done+'/'+total+' ⭐</span></div>';
+  });
+  html+='<div style="margin-top:12px">';
+  lvls.forEach(function(l){if(progress[l]&&progress[l].length)progress[l].forEach(function(t){html+='<span class="dp">'+l+': '+t+'</span>';});});
+  html+='</div><div style="margin-top:13px"><button onclick="exportStars()" style="padding:10px 20px;border-radius:11px;border:none;background:#5B4FCF;color:#fff;font-size:12px;font-weight:900;cursor:pointer">📥 Save my stars</button></div>';
+  el.innerHTML=html;
+}
+function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2200);}
+
+buildLvls();buildChips();
+</script>
+</body>
+</html>
